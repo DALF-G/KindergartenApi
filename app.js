@@ -15,6 +15,14 @@ app.use(cors())
 const adminRegisterRoute = require("./routes/adminRegister");
 app.use("/api/admin", adminRegisterRoute)
 
+// specify the login routes
+const loginRoutes = require("./routes/userLogin")
+app.use("/api/user",loginRoutes);
+
+// specify the classroom routes
+const classroomRoutes = require("./routes/classroom")
+app.use("/api/classroom",classroomRoutes)
+
 // connect the application to mongodb
 mongoose.connect(process.env.MONGO_URI).then(()=>console.log("Mongo Database connected successfully")).catch(err=> console.error("Error connecting to Database"));
 
