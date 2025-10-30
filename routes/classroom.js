@@ -13,10 +13,14 @@ const classroomController = require("../controllers/classroomController")
 router.post("/add",auth,authorizeRoles('admin'), classroomController.addClassroom)
 
 // get all classrooms route
-router.get("/all",auth, classroomController.getAllClassrooms)
+router.get("/",auth, classroomController.getAllClassrooms)
 
 // get a single classroom by ID route
 router.get("/:id",auth, classroomController.getClassroomById)
+
+// update a classroom details
+router.put("/:id",auth,authorizeRoles('admin'),classroomController.updateAClass)
+
 
 // delete a classroom by ID route
 router.delete("/:id",auth,authorizeRoles('admin'), classroomController.deleteClassroomById)

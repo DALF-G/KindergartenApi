@@ -27,7 +27,10 @@ exports.addClassroom = async (req, res)=>{
 exports.getAllClassrooms = async (req, res)=>{
     try{
         const classrooms = await Classroom.find()
-        res.status(200).json({message: "Classrooms Retrieved Successfully", classrooms})
+        .populate('teacher', 'name email phone')
+        .populate('student', 'name admissionNumber')
+
+        res.status(200).json({classrooms})
     }
     catch(err){
         res.status(400).json({message: "Error Retrieving Classrooms", error: err.message})
@@ -39,13 +42,36 @@ exports.getClassroomById = async (req, res)=>{
     try{
         const {id} = req.params
         const classroom = await Classroom.findById(id)
+        .populate('teacher', 'name email phone')
+        .populate('student', 'name admissionNumber')
         if(!classroom){
             return res.status(404).json({message: "Classroom Not Found"})
         }
-        res.status(200).json({message: "Classroom Retrieved Successfully", classroom})
+        res.status(200).json({classroom})
     }
     catch(err){
         res.status(400).json({message: "Error Retrieving Classroom", error: err.message})
+    }
+}
+
+// Below is the update route
+exports.updateAClass = async(req, res)=>{
+    try{
+        //  Find a classroom by use of the ID and update it
+        const updatedClassroom = await Classroom.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            {new : true} //return the new updated classroom details
+        )
+
+        // check whether the given classroomid is valid or not
+        if(!updatedClassroom){
+            return res.status(400).json({message: " Classroom NOT Found"})
+        }
+        res.json(updatedClassroom)
+    }
+    catch(err){
+        res.status(400).json({message: "Error Updating Classroom", error: err.message})
     }
 }
 

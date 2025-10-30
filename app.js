@@ -23,6 +23,10 @@ app.use("/api/user",loginRoutes);
 const classroomRoutes = require("./routes/classroom")
 app.use("/api/classroom",classroomRoutes)
 
+//  specify the route for accessing a teacher
+const teacherRoutes = require("./routes/teacher")
+    app.use("/api/teacher",teacherRoutes)
+
 // connect the application to mongodb
 mongoose.connect(process.env.MONGO_URI).then(()=>console.log("Mongo Database connected successfully")).catch(err=> console.error("Error connecting to Database"));
 
