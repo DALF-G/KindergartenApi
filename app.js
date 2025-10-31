@@ -27,6 +27,11 @@ app.use("/api/classroom",classroomRoutes)
 const teacherRoutes = require("./routes/teacher")
     app.use("/api/teacher",teacherRoutes)
 
+// specify the routes for accessing a parent
+const parentRoutes = require("./routes/parent")
+app.use("/api/parent",parentRoutes)    
+
+
 // connect the application to mongodb
 mongoose.connect(process.env.MONGO_URI).then(()=>console.log("Mongo Database connected successfully")).catch(err=> console.error("Error connecting to Database"));
 

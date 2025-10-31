@@ -90,14 +90,99 @@ exports.getTeacherById = async(req, res)=>{
     }
 }
 
+// update the teacher
+// Notice that since some fields are replicated in both the teachers collection and the users collections we need to update in both collections
+exports.updateTeacher = async(req, res)=>{
+    try{
+        // destructure the request sent
+        const{name,password,email, ...otherData} = req.body;
+
+        // console.log("The details entered are",name,password,email,otherData)
+
+        //  find a teacher and update
+        const updatedTeacher = await Teacher.findByIdAndUpdate(
+            req.params.id,
+            {name,password,email, ...otherData},
+            {new: true}
+        )
+
+        if(!updatedTeacher){
+            return res.status(404).json({message: "Teacher Not Found"})
+        }
+
+        // find the linked user record and update it
+        const user = await User.findOne({teacher : updatedTeacher._id})
+
+        if(user){
+            // update the name and the email in the users collections as well
+            if(name) user.name = name;
+            if(email) user.email = email;
+
+            // the same case applies for the password but remeber the  passward needs to be hashed
+            if(password){
+                const hashedPassword = await bycryptjs.hash(password,10)
+                user.password = hashedPassword
+            }
+            // complete the update activity
+            await user.save()
+
+            // if it is successfull, return a response
+            res.json({
+                message:"Teachers Details Updated Successfully",updatedTeacher
+            })
+        }
+
+    }
+    catch(err){
+        res.status(400).json({message: "Error updating the Teachers", error : err.message})
+    }
+}
+
+// see the classes the teacher is teaching
+exports.getMyClasses = async(req,res)=>{
+    try{
+        // Get the teachers is from the logged token
+        const userId = req.user.userId
+        // console.log("The id of the logged teacher id",userId)
+        // find the user and populate the teacher reference
+        const user = await User.findById(userId).populate('teacher')
+
+        // check whwther the user exists and is linked to a teacher
+        if(!user || !user.teacher){
+            return res.status(404).json({message: " Teacher not found"})
+        }
+
+        // if the linking is there, get all the classrooms taught by this teacher and link them
+        const classes = await Classroom.find({teacher : user.teacher._id}).populate('students')
+
+        // if no class is linked to the teacher return a response
+        if(classes.length === 0){
+            return res.status(200).json({message: "You have no classes yet"})
+        }
+
+        // send the results
+        res.json(classes)
+    }
+    catch(err){
+        res.status(500).json({message: "Error Fetching the classes",error:err.message})
+    }
+}
+
 // delete a Teacher by ID
 exports.deleteTeacherById = async (req, res)=>{
     try{
-        const {id} = req.params
-        const deletedTeacher = await Teacher.findByIdAndDelete(id)
+        const teacherId = req.params.id
+        const deletedTeacher = await Teacher.findByIdAndDelete(teacherId)
         if(!deletedTeacher){
             return res.status(404).json({message: "Teacher Not Found"})
         }
+
+        //delete user inside of the user collection in the DB
+        await User.findOneAndDelete({teacher: teacherId}) 
+
+        // unasign the teacher from any classroom
+        await Classroom.updateMany({teacher : teacherId}, {$set : {teacher : null}})
+       
         res.status(200).json({message: "Teacher Deleted Successfully", deletedTeacher})
     }
     catch(err){

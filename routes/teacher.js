@@ -18,6 +18,12 @@ router.get("/",auth, teacherController.getAllTeachers)
 // get teacher based on id
 router.get("/:id",auth, teacherController.getTeacherById)
 
+// update a teacher
+router.put("/:id",auth,authorizeRoles('admin') ,teacherController.updateTeacher)
+
+// get the classes the teacher is teaching
+router.get("/myclasses",auth,teacherController.getMyClasses)
+
 // Delete a techer
 router.delete("/:id",auth,authorizeRoles('admin'),teacherController.deleteTeacherById)
 

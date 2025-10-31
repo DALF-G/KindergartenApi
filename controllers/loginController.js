@@ -32,7 +32,7 @@ exports.login = async(req, res)=>{
         const token = jwt.sign(
             {userId : userExist._id, role :userExist.role},
             JWT_SECRET,
-            {expiresIn : "1h"}
+            {expiresIn : "70h"}
         );
         // console.log("The generate login token is:",token)
 
