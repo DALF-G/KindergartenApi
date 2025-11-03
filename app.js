@@ -36,7 +36,19 @@ app.use("/api/parent",parentRoutes)
 
 // specify the students route
 const studentRoutes = require("./routes/student")
-    app.use("/api/student",studentRoutes)
+app.use("/api/student",studentRoutes)
+
+// define the route to get admin dashboard starts
+const adminDashboardRoutes = require("./routes/adminDashboard")
+app.use("/api/adminstats",adminDashboardRoutes) 
+
+// define the routes to get parent dashboard stats
+const parentDashboardRoutes = require("./routes/parentDashboard")
+app.use("/api/parentstats",parentDashboardRoutes)
+
+//  Define the route to get the teacher dashboard stats
+const teacherDashboardRoutes = require("./routes/teacherDashboard")
+app.use("/api/teacherstats",teacherDashboardRoutes)
 
 
 // connect the application to mongodb
