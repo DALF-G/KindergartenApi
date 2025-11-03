@@ -18,6 +18,9 @@ router.get("/",auth, parentController.getAllParents)
 // update a parent details
 router.put("/:id",auth,authorizeRoles('admin'),parentController.updateAParent)
 
+// update a parent based on national Id
+router.get("/:id", parentController.getParentById)
+
 // Delete a parent
 router.delete("/:id",auth,authorizeRoles('admin'),parentController.deleteParentById)
 

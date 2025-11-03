@@ -28,7 +28,7 @@ exports.getAllClassrooms = async (req, res)=>{
     try{
         const classrooms = await Classroom.find()
         .populate('teacher', 'name email phone')
-        .populate('student', 'name admissionNumber')
+        .populate('students', 'name admissionNumber')
 
         res.status(200).json({classrooms})
     }
@@ -43,7 +43,7 @@ exports.getClassroomById = async (req, res)=>{
         const {id} = req.params
         const classroom = await Classroom.findById(id)
         .populate('teacher', 'name email phone')
-        .populate('student', 'name admissionNumber')
+        .populate('students', 'name admissionNumber')
         if(!classroom){
             return res.status(404).json({message: "Classroom Not Found"})
         }
@@ -55,25 +55,25 @@ exports.getClassroomById = async (req, res)=>{
 }
 
 // Below is the update route
-exports.updateAClass = async(req, res)=>{
-    try{
-        //  Find a classroom by use of the ID and update it
-        const updatedClassroom = await Classroom.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            {new : true} //return the new updated classroom details
-        )
+exports.updateAClass = async (req, res) => {
+  try {
+    const updatedClassroom = await Classroom.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    )
+      .populate("teacher", "name email phone")
+      .populate("students", "name admissionNumber");
 
-        // check whether the given classroomid is valid or not
-        if(!updatedClassroom){
-            return res.status(400).json({message: " Classroom NOT Found"})
-        }
-        res.json(updatedClassroom)
+    if (!updatedClassroom) {
+      return res.status(404).json({ message: "Classroom NOT Found" });
     }
-    catch(err){
-        res.status(400).json({message: "Error Updating Classroom", error: err.message})
-    }
-}
+
+    res.status(200).json({ message: "Classroom Updated Successfully", updatedClassroom });
+  } catch (err) {
+    res.status(400).json({ message: "Error Updating Classroom", error: err.message });
+  }
+};
 
 // delete a classroom by ID
 exports.deleteClassroomById = async (req, res)=>{

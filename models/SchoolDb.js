@@ -29,7 +29,7 @@ const classroomShema = new Schema({
     gradeLevel: {type : String},
     classYear: {type : Number},
     teacher: {type : mongoose.Schema.Types.ObjectId, ref: "Teacher", default : null},
-    student: {type : mongoose.Schema.Types.ObjectId, ref: "Student", default : null}    
+    students: [{type : mongoose.Schema.Types.ObjectId, ref: "Student",}]   
 }, {timestamps : true})
 
 // define parents schema

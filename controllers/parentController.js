@@ -59,7 +59,7 @@ exports.getAllParents = async(req,res)=>{
         res.status(400).json({message: "Error fetching Parents", error : err.message})
     }
 }
-
+// update a parent
 exports.updateAParent = async(req, res)=>{
     try{
         // destructure the request sent
@@ -106,7 +106,24 @@ exports.updateAParent = async(req, res)=>{
     }
 }
 
-// delete a Teacher by ID
+// get a parent by Id
+exports.getParentById = async(req, res)=>{
+    try{
+        const parent = await Parent.findOne({nationalId : req.params.id});
+
+        // check whether he exists
+        if(!parent){
+            return req.status(404).json({message : "Parent not found"})
+        }
+        // /if he exists,return results
+        res.json(parent)
+    }
+    catch(err){
+        res.status(400).json({message: "Error Fetching the Parent", error : err.message})
+    }
+}
+
+// delete a parent by ID
 exports.deleteParentById = async (req, res)=>{
     try{
         const parentId = req.params.id

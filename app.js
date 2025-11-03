@@ -11,6 +11,9 @@ const app = express();
 app.use(express.json())
 app.use(cors())
 
+// specify the upload folder for your file to make them accessible when it get hosted
+app.use('/uploads',express.static('uploads'))
+
 // specify the adminRegister route
 const adminRegisterRoute = require("./routes/adminRegister");
 app.use("/api/admin", adminRegisterRoute)
@@ -29,7 +32,11 @@ const teacherRoutes = require("./routes/teacher")
 
 // specify the routes for accessing a parent
 const parentRoutes = require("./routes/parent")
-app.use("/api/parent",parentRoutes)    
+app.use("/api/parent",parentRoutes)   
+
+// specify the students route
+const studentRoutes = require("./routes/student")
+    app.use("/api/student",studentRoutes)
 
 
 // connect the application to mongodb
