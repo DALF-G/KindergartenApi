@@ -38,12 +38,16 @@ exports.addStudent = async (req, res)=>{
         // 4. handle the photo upload if there is any photo being uploaded
         let photo = null;
 
-        if(req.file){
-            const ext = path.extname(req.file.originalname)
-            const newFileName = Date.now() + ext;
-            const newPath = path.join('uploads', newFileName)
-            fs.renameSync(req.file.path,newPath)
-            photo = newPath.replace(/\\/g, '/')
+        // if(req.file){
+        //     const ext = path.extname(req.file.originalname)
+        //     const newFileName = Date.now() + ext;
+        //     const newPath = path.join('uploads', newFileName)
+        //     fs.renameSync(req.file.path,newPath)
+        //     photo = newPath.replace(/\\/g, '/')
+        // }
+
+        if (req.file && req.file.path) {
+            req.body.photo = req.file.path;
         }
 
         // 5. create a student and save the new student to the Db
@@ -52,7 +56,7 @@ exports.addStudent = async (req, res)=>{
             dateOfBirth,
             gender,
             admissionNumber,
-            photo,
+            photo:req.body.photo,
             parent: parent._id,
             classroom: classroom._id
         });

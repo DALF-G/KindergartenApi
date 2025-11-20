@@ -7,12 +7,15 @@ const cors = require("cors")
 // create an express application
 const app = express();
 
+// This makes images accessible via URLs like: http://yourserver.com/uploads/1234567.jpg
+app.use('/uploads', express.static('uploads'));
+
 // allow the application to use json
 app.use(express.json())
 app.use(cors())
 
-// specify the upload folder for your file to make them accessible when it get hosted
-app.use('/uploads',express.static('uploads'))
+// // specify the upload folder for your file to make them accessible when it get hosted
+// app.use('/uploads',express.static('uploads'))
 
 // specify the adminRegister route
 const adminRegisterRoute = require("./routes/adminRegister");

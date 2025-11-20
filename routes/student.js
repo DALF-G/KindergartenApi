@@ -9,8 +9,19 @@ const {auth,authorizeRoles} = require("../middleware/auth")
 // import the student controller
 const studentController = require("../controllers/studentController")
 
+const upload = require("../middlewares/upload")
+
+
 // below is the route to add a student
-router.post("/add",studentController.uploadStudentPhoto, studentController.addStudent)
+// router.post("/add",studentController.uploadStudentPhoto, studentController.addStudent)
+
+router.post('/', auth, (req, res, next) => {
+    console.log('📥 POST / route hit');
+    next();
+  }, upload.single('photo'), (req, res, next) => {
+    console.log('📷 File middleware passed');
+    next();
+  }, studentController.addStudent);
 
 // below is the route to get all students
 router.get("/", studentController.getAllStudents);
